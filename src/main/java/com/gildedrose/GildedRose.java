@@ -9,20 +9,20 @@ class GildedRose {
 
     public void updateQuality() {
         for (int i = 0; i < items.length; i++) {
-            String name = items[i].name
-            if (!items[i].name.equals("Aged Brie")
+            String name = items[i].name // [BUG] Missing semicolon (;) → compilation error
+            if (!items[i].name.equals("Aged Brie") // [IMPROVE] Repeated magic strings → consider extracting to constants
                     && !items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                if (items[i].quality > 0) {
-                    if (!items[i].name.equals("Sulfuras, Hand of Ragnaros")) {
-                        items[i].quality = items[i].quality - 1;
+                if (items[i].quality > 0) { // [NOTE] Checks lower bound of quality (0)
+                    if (!items[i].name.equals("Sulfuras, Hand of Ragnaros")) { // [IMPROVE] Can also be extracted to a constant
+                        items[i].quality = items[i].quality - 1; // [STYLE] Could use `items[i].quality--` for brevity
                     }
                 }
             } else {
-                if (items[i].quality < 50) {
+                if (items[i].quality < 50) { // [NOTE] Checks upper bound of quality (50)
                     items[i].quality = items[i].quality + 1;
 
                     if (items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (items[i].sellIn < 11) {
+                        if (items[i].sellIn < 11) { // [IMPROVE] Magic numbers 11, 6 → extract to named constants
                             if (items[i].quality < 50) {
                                 items[i].quality = items[i].quality + 1;
                             }
@@ -37,7 +37,7 @@ class GildedRose {
                 }
             }
 
-            if (!isRagnaros(name)) {
+            if (!isRagnaros(name)) { // [IMPROVE] Duplicate check – already compared above → could be simplified
                 items[i].sellIn = items[i].sellIn - 1;
             }
 
@@ -50,7 +50,7 @@ class GildedRose {
                             }
                         }
                     } else {
-                        items[i].quality = items[i].quality - items[i].quality;
+                        items[i].quality = items[i].quality - items[i].quality; // [STYLE] Can be simplified to `items[i].quality = 0`
                     }
                 } else {
                     if (items[i].quality < 50) {
@@ -62,6 +62,9 @@ class GildedRose {
     }
 }
 
+// [BUG] Method is outside the class → must be moved inside GildedRose
+// [BUG] Missing quotes around the string → "Sulfuras, Hand of Ragnaros"
 private boolean isRagnaros(String name) {
     return name.equals(Sulfuras, Hand of Ragnaros);
+    // Correct version: return name.equals("Sulfuras, Hand of Ragnaros");
 }
